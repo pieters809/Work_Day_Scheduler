@@ -1,4 +1,6 @@
 body {
+  background-image:linear-gradient(white, black);
+  ;
   font-family: 'Open Sans', sans-serif;
   font-size: 16px;
   line-height: 1;
