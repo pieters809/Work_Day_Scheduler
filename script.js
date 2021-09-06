@@ -1,77 +1,52 @@
-// Global variables
-var currentDay = document.getElementById("currentDay");
-var todaysDate = moment().format("MMMM Do YYYY, h:mm a"); 
-var hourEl = $("#hour").data("time");
-var saveButton = $(".saveBtn");
-var description = $(".description");
-var descriptionEl = $(".description").val();
-var timeNow = moment().format('HH');
-var table = $("#table");
+$(document).ready(function () {
+  // listen for save button clicks
+  $(".saveBtn").on("click", function () {
+    // get nearby values
+    var value = $(this).siblings(".description").val();
+    var time = $(this).parent().attr("id");
 
-console.log("this should be the current hour " + timeNow);
-console.log("this is the hour element " + hourEl);
+    // save data in localStorage
+    localStorage.setItem(time, value);
+  });
 
+  function hourUpdater() {
+    // get current number of hours
+    var currentHour = moment().hours();
 
+    // loop over time blocks
+    $(".time-block").each(function () {
+      var blockHour = parseInt($(this).attr("id").split("-")[1]);
 
-//Turns hours colors based on time 
-function timePassing (){
-        $(".row").each(function() {
-            // console.log(i);
-        var description = $(".row").length;
-        console.log(description);
-        hourEl = parseInt($(this).attr("id"));
-        console.log(hourEl);
-        console.log(this);
-        if(hourEl < timeNow){
-            $(this).addClass("past");
-            console.log("past");
-        } else if (hourEl === timeNow) {
-            $(this).removeClass("past");
-            $(this).addClass("present");
-            console.log("present");
-        } else {
-            $(this).removeClass("past");
-            $(this).removeClass("present");
-            $(this).addClass("future");
-            console.log("future");
-        };
-     });
-    };
-    // save button listener.
-$(".saveBtn").on("click", function(){
-    console.log("register the click");
-    var hourStore = parseInt($(this).parents("div").attr("id"));
-    var descriptStore = $(this).siblings("textarea").val();
-    console.log(hourStore);
-    console.log(descriptStore);
-    save(hourStore, descriptStore);
+      // check if the time has changed to move to different block
+      if (blockHour < currentHour) {
+        $(this).addClass("past");
+      } else if (blockHour === currentHour) {
+        $(this).removeClass("past");
+        $(this).addClass("present");
+      } else {
+        $(this).removeClass("past");
+        $(this).removeClass("present");
+        $(this).addClass("future");
+      }
+    });
+  }
 
-// Save button to add data to local storage.
-function save(hStore, dStore) {
-    event.preventDefault();
-    localStorage.setItem(hStore , dStore);
+  hourUpdater();
 
- };
+  // Check if time needs to be updated
+  var interval = setInterval(hourUpdater, 15000);
+
+  // load any saved data from localStorage
+  $("#hour-0 .description").val(localStorage.getItem("hour-0"));
+  $("#hour-1 .description").val(localStorage.getItem("hour-1"));
+  $("#hour-2 .description").val(localStorage.getItem("hour-2"));
+  $("#hour-3 .description").val(localStorage.getItem("hour-3"));
+  $("#hour-4 .description").val(localStorage.getItem("hour-4"));
+  $("#hour-5 .description").val(localStorage.getItem("hour-5"));
+  $("#hour-6 .description").val(localStorage.getItem("hour-6"));
+  $("#hour-7 .description").val(localStorage.getItem("hour-7"));
+  $("#hour-8 .description").val(localStorage.getItem("hour-8"));
+
+  // display current day on page
+  $("#currentDay").text(moment().format('dddd MMMM Do YYYY, h:mm a'));
 });
-
-// // Prints items saved in the local storage.
-$(document).ready(function(){
-    $(".hour").each(function() {
-        $("#0 .description").val(localStorage.getItem("0"));
-        $("#1 .description").val(localStorage.getItem("1"));
-        $("#2 .description").val(localStorage.getItem("2"));
-        $("#3 .description").val(localStorage.getItem("3"));
-        $("#4 .description").val(localStorage.getItem("4"));
-        $("#5 .description").val(localStorage.getItem("5"));
-        $("#6 .description").val(localStorage.getItem("6"));
-        $("#7 .description").val(localStorage.getItem("7"));
-        $("#8 .description").val(localStorage.getItem("8"));
-});
-});
-
-// current time.
-console.log("Current time: ", moment().format('LTS'));
-
-// Date on top of the page.
-currentDay.innerHTML = todaysDate;
-timePassing();
